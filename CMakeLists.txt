@@ -8,6 +8,8 @@ include(AddIndependenceCheck)
 include(GitBuildInformation)
 include(MakeVersionHeader)
 
+# find_package(Bit 0.2.0 COMPONENTS Stl Math EXACT REQUIRED QUIET)
+
 # Temporary hack while FindBit.cmake is being tuned
 include("$ENV{BIT_HOME}/Stl-0.2/lib/StlTargets.cmake")
 

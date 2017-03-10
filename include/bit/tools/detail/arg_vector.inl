@@ -9,7 +9,8 @@
 // Constructors
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector_iterator::arg_vector_iterator( argv_type argv )
+template<typename CharT, typename Traits>
+inline bit::tools::arg_vector_iterator<CharT,Traits>::arg_vector_iterator( argv_type argv )
   noexcept
   : m_current(argv),
     m_view(*argv)
@@ -21,8 +22,9 @@ inline bit::tools::arg_vector_iterator::arg_vector_iterator( argv_type argv )
 // Element Access
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector_iterator::reference
-  bit::tools::arg_vector_iterator::operator*()
+template<typename CharT, typename Traits>
+inline typename bit::tools::arg_vector_iterator<CharT,Traits>::reference
+  bit::tools::arg_vector_iterator<CharT,Traits>::operator*()
   noexcept
 {
   return m_view;
@@ -30,8 +32,9 @@ inline bit::tools::arg_vector_iterator::reference
 
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector_iterator::pointer
-  bit::tools::arg_vector_iterator::operator->()
+template<typename CharT, typename Traits>
+inline typename bit::tools::arg_vector_iterator<CharT,Traits>::pointer
+  bit::tools::arg_vector_iterator<CharT,Traits>::operator->()
   noexcept
 {
   return &m_view;
@@ -41,8 +44,9 @@ inline bit::tools::arg_vector_iterator::pointer
 // Iteration
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector_iterator&
-  bit::tools::arg_vector_iterator::operator++()
+template<typename CharT, typename Traits>
+inline bit::tools::arg_vector_iterator<CharT,Traits>&
+  bit::tools::arg_vector_iterator<CharT,Traits>::operator++()
   noexcept
 {
   ++m_current;
@@ -50,8 +54,9 @@ inline bit::tools::arg_vector_iterator&
   return (*this);
 }
 
-inline bit::tools::arg_vector_iterator
-  bit::tools::arg_vector_iterator::operator++(int)
+template<typename CharT, typename Traits>
+inline bit::tools::arg_vector_iterator<CharT,Traits>
+  bit::tools::arg_vector_iterator<CharT,Traits>::operator++(int)
   noexcept
 {
   auto cur = (*this);
@@ -62,8 +67,9 @@ inline bit::tools::arg_vector_iterator
 
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector_iterator&
-  bit::tools::arg_vector_iterator::operator--()
+template<typename CharT, typename Traits>
+inline bit::tools::arg_vector_iterator<CharT,Traits>&
+  bit::tools::arg_vector_iterator<CharT,Traits>::operator--()
   noexcept
 {
   --m_current;
@@ -71,8 +77,9 @@ inline bit::tools::arg_vector_iterator&
   return (*this);
 }
 
-inline bit::tools::arg_vector_iterator
-  bit::tools::arg_vector_iterator::operator--(int)
+template<typename CharT, typename Traits>
+inline bit::tools::arg_vector_iterator<CharT,Traits>
+  bit::tools::arg_vector_iterator<CharT,Traits>::operator--(int)
   noexcept
 {
   auto cur = (*this);
@@ -83,8 +90,9 @@ inline bit::tools::arg_vector_iterator
 
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector_iterator&
-  bit::tools::arg_vector_iterator::operator+=( difference_type n )
+template<typename CharT, typename Traits>
+inline bit::tools::arg_vector_iterator<CharT,Traits>&
+  bit::tools::arg_vector_iterator<CharT,Traits>::operator+=( difference_type n )
   noexcept
 {
   m_current += n;
@@ -92,8 +100,9 @@ inline bit::tools::arg_vector_iterator&
   return (*this);
 }
 
-inline bit::tools::arg_vector_iterator&
-  bit::tools::arg_vector_iterator::operator-=( difference_type n )
+template<typename CharT, typename Traits>
+inline bit::tools::arg_vector_iterator<CharT,Traits>&
+  bit::tools::arg_vector_iterator<CharT,Traits>::operator-=( difference_type n )
   noexcept
 {
   m_current -= n;
@@ -107,35 +116,43 @@ inline bit::tools::arg_vector_iterator&
 // arg_vector
 //============================================================================
 
-inline bit::tools::arg_vector_iterator
-  bit::tools::operator+( const arg_vector_iterator& lhs, std::ptrdiff_t rhs )
+template<typename CharT, typename Traits>
+inline bit::tools::arg_vector_iterator<CharT,Traits>
+  bit::tools::operator+( const arg_vector_iterator<CharT,Traits>& lhs,
+                         std::ptrdiff_t rhs )
   noexcept
 {
-  return arg_vector_iterator(lhs)+=rhs;
+  return arg_vector_iterator<CharT,Traits>(lhs)+=rhs;
 }
 
-inline bit::tools::arg_vector_iterator
-  bit::tools::operator+( std::ptrdiff_t lhs, const arg_vector_iterator& rhs )
+template<typename CharT, typename Traits>
+inline bit::tools::arg_vector_iterator<CharT,Traits>
+  bit::tools::operator+( std::ptrdiff_t lhs,
+                         const arg_vector_iterator<CharT,Traits>& rhs )
   noexcept
 {
-  return arg_vector_iterator(rhs)+=lhs;
+  return arg_vector_iterator<CharT,Traits>(rhs)+=lhs;
 }
 
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector_iterator
-  bit::tools::operator-( const arg_vector_iterator& lhs, std::ptrdiff_t rhs )
+template<typename CharT, typename Traits>
+inline bit::tools::arg_vector_iterator<CharT,Traits>
+  bit::tools::operator-( const arg_vector_iterator<CharT,Traits>& lhs,
+                         std::ptrdiff_t rhs )
   noexcept
 {
-  return arg_vector_iterator(lhs)-=rhs;
+  return arg_vector_iterator<CharT,Traits>(lhs)-=rhs;
 }
 
 //----------------------------------------------------------------------------
 // Comparison
 //----------------------------------------------------------------------------
 
+template<typename CharT, typename Traits>
 inline bool
-  bit::tools::operator==( const arg_vector_iterator& lhs, const arg_vector_iterator& rhs )
+  bit::tools::operator==( const arg_vector_iterator<CharT,Traits>& lhs,
+                          const arg_vector_iterator<CharT,Traits>& rhs )
   noexcept
 {
   return lhs.m_current == rhs.m_current;
@@ -143,8 +160,10 @@ inline bool
 
 //----------------------------------------------------------------------------
 
+template<typename CharT, typename Traits>
 inline bool
-  bit::tools::operator!=( const arg_vector_iterator& lhs, const arg_vector_iterator& rhs )
+  bit::tools::operator!=( const arg_vector_iterator<CharT,Traits>& lhs,
+                          const arg_vector_iterator<CharT,Traits>& rhs )
   noexcept
 {
   return !(lhs == rhs);
@@ -152,8 +171,10 @@ inline bool
 
 //----------------------------------------------------------------------------
 
+template<typename CharT, typename Traits>
 inline bool
-  bit::tools::operator<( const arg_vector_iterator& lhs, const arg_vector_iterator& rhs )
+  bit::tools::operator<( const arg_vector_iterator<CharT,Traits>& lhs,
+                         const arg_vector_iterator<CharT,Traits>& rhs )
   noexcept
 {
   return (lhs.m_current < rhs.m_current);
@@ -161,8 +182,10 @@ inline bool
 
 //----------------------------------------------------------------------------
 
+template<typename CharT, typename Traits>
 inline bool
-  bit::tools::operator>( const arg_vector_iterator& lhs, const arg_vector_iterator& rhs )
+  bit::tools::operator>( const arg_vector_iterator<CharT,Traits>& lhs,
+                         const arg_vector_iterator<CharT,Traits>& rhs )
   noexcept
 {
   return (rhs < lhs);
@@ -170,8 +193,10 @@ inline bool
 
 //----------------------------------------------------------------------------
 
+template<typename CharT, typename Traits>
 inline bool
-  bit::tools::operator<=( const arg_vector_iterator& lhs, const arg_vector_iterator& rhs )
+  bit::tools::operator<=( const arg_vector_iterator<CharT,Traits>& lhs,
+                          const arg_vector_iterator<CharT,Traits>& rhs )
   noexcept
 {
   return !(rhs < lhs);
@@ -179,8 +204,10 @@ inline bool
 
 //----------------------------------------------------------------------------
 
+template<typename CharT, typename Traits>
 inline bool
-  bit::tools::operator>=( const arg_vector_iterator& lhs, const arg_vector_iterator& rhs )
+  bit::tools::operator>=( const arg_vector_iterator<CharT,Traits>& lhs,
+                          const arg_vector_iterator<CharT,Traits>& rhs )
   noexcept
 {
   return !(lhs < rhs);
@@ -191,7 +218,8 @@ inline bool
 // Constructors
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector::arg_vector( argc_type argc, argv_type argv )
+template<typename CharT, typename Traits>
+inline bit::tools::basic_arg_vector<CharT,Traits>::basic_arg_vector( argc_type argc, argv_type argv )
   noexcept
   : m_argv(argv),
     m_argc(argc)
@@ -203,7 +231,8 @@ inline bit::tools::arg_vector::arg_vector( argc_type argc, argv_type argv )
 // Capacity
 //----------------------------------------------------------------------------
 
-inline bool bit::tools::arg_vector::empty()
+template<typename CharT, typename Traits>
+inline bool bit::tools::basic_arg_vector<CharT,Traits>::empty()
   const noexcept
 {
   return m_argc == 0;
@@ -211,17 +240,21 @@ inline bool bit::tools::arg_vector::empty()
 
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector::size_type bit::tools::arg_vector::size()
+template<typename CharT, typename Traits>
+inline typename bit::tools::basic_arg_vector<CharT,Traits>::size_type
+  bit::tools::basic_arg_vector<CharT,Traits>::size()
   const noexcept
 {
-  return m_argc;
+  return static_cast<size_type>(m_argc);
 }
 
 //----------------------------------------------------------------------------
 // Element Access
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector::argv_type bit::tools::arg_vector::data()
+template<typename CharT, typename Traits>
+inline typename bit::tools::basic_arg_vector<CharT,Traits>::argv_type
+  bit::tools::basic_arg_vector<CharT,Traits>::data()
   const noexcept
 {
   return m_argv;
@@ -229,18 +262,21 @@ inline bit::tools::arg_vector::argv_type bit::tools::arg_vector::data()
 
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector::value_type
-  bit::tools::arg_vector::at( index_type n )
+template<typename CharT, typename Traits>
+inline typename bit::tools::basic_arg_vector<CharT,Traits>::value_type
+  bit::tools::basic_arg_vector<CharT,Traits>::at( index_type n )
   const
 {
-  if( n < 0 || n >= m_argc ) throw std::out_of_range("arg_vector::at: index out of range");
+  if( n < 0 || n >= m_argc ) throw std::out_of_range("basic_arg_vector::at: index out of range");
 
   return m_argv[n];
 }
 
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector::value_type bit::tools::arg_vector::program()
+template<typename CharT, typename Traits>
+inline typename bit::tools::basic_arg_vector<CharT,Traits>::value_type
+  bit::tools::basic_arg_vector<CharT,Traits>::program()
   const noexcept
 {
   return m_argv[0];
@@ -248,8 +284,9 @@ inline bit::tools::arg_vector::value_type bit::tools::arg_vector::program()
 
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector::value_type
-  bit::tools::arg_vector::arg( index_type n )
+template<typename CharT, typename Traits>
+inline typename bit::tools::basic_arg_vector<CharT,Traits>::value_type
+  bit::tools::basic_arg_vector<CharT,Traits>::arg( index_type n )
   const noexcept
 {
   return m_argv[1 + n];
@@ -259,8 +296,9 @@ inline bit::tools::arg_vector::value_type
 // Iterators
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector::iterator
-  bit::tools::arg_vector::begin()
+template<typename CharT, typename Traits>
+inline typename bit::tools::basic_arg_vector<CharT,Traits>::iterator
+  bit::tools::basic_arg_vector<CharT,Traits>::begin()
   const noexcept
 {
   return iterator{&m_argv[0]};
@@ -268,8 +306,9 @@ inline bit::tools::arg_vector::iterator
 
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector::iterator
-  bit::tools::arg_vector::end()
+template<typename CharT, typename Traits>
+inline typename bit::tools::basic_arg_vector<CharT,Traits>::iterator
+  bit::tools::basic_arg_vector<CharT,Traits>::end()
   const noexcept
 {
   return iterator{&m_argv[m_argc]};
@@ -277,8 +316,9 @@ inline bit::tools::arg_vector::iterator
 
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector::reverse_iterator
-  bit::tools::arg_vector::rbegin()
+template<typename CharT, typename Traits>
+inline typename bit::tools::basic_arg_vector<CharT,Traits>::reverse_iterator
+  bit::tools::basic_arg_vector<CharT,Traits>::rbegin()
   const noexcept
 {
   return reverse_iterator{iterator{&m_argv[m_argc-1]}};
@@ -286,8 +326,9 @@ inline bit::tools::arg_vector::reverse_iterator
 
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector::reverse_iterator
-  bit::tools::arg_vector::rend()
+template<typename CharT, typename Traits>
+inline typename bit::tools::basic_arg_vector<CharT,Traits>::reverse_iterator
+  bit::tools::basic_arg_vector<CharT,Traits>::rend()
   const noexcept
 {
   return reverse_iterator{iterator{&m_argv[-1]}};
@@ -295,8 +336,9 @@ inline bit::tools::arg_vector::reverse_iterator
 
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector::const_iterator
-  bit::tools::arg_vector::cbegin()
+template<typename CharT, typename Traits>
+inline typename bit::tools::basic_arg_vector<CharT,Traits>::const_iterator
+  bit::tools::basic_arg_vector<CharT,Traits>::cbegin()
   const noexcept
 {
   return const_iterator{&m_argv[0]};
@@ -304,8 +346,9 @@ inline bit::tools::arg_vector::const_iterator
 
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector::const_iterator
-  bit::tools::arg_vector::cend()
+template<typename CharT, typename Traits>
+inline typename bit::tools::basic_arg_vector<CharT,Traits>::const_iterator
+  bit::tools::basic_arg_vector<CharT,Traits>::cend()
   const noexcept
 {
   return const_iterator{&m_argv[m_argc]};
@@ -313,8 +356,9 @@ inline bit::tools::arg_vector::const_iterator
 
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector::const_reverse_iterator
-  bit::tools::arg_vector::crbegin()
+template<typename CharT, typename Traits>
+inline typename bit::tools::basic_arg_vector<CharT,Traits>::const_reverse_iterator
+  bit::tools::basic_arg_vector<CharT,Traits>::crbegin()
   const noexcept
 {
   return const_reverse_iterator{const_iterator{&m_argv[m_argc-1]}};
@@ -322,8 +366,9 @@ inline bit::tools::arg_vector::const_reverse_iterator
 
 //----------------------------------------------------------------------------
 
-inline bit::tools::arg_vector::const_reverse_iterator
-  bit::tools::arg_vector::crend()
+template<typename CharT, typename Traits>
+inline typename bit::tools::basic_arg_vector<CharT,Traits>::const_reverse_iterator
+  bit::tools::basic_arg_vector<CharT,Traits>::crend()
   const noexcept
 {
   return const_reverse_iterator{const_iterator{&m_argv[-1]}};

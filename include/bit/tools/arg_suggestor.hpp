@@ -15,6 +15,7 @@ namespace bit {
     std::size_t levenshtein_distance( stl::string_view lhs, stl::string_view rhs ) noexcept;
     std::size_t damerau_levenshtien_distance( stl::string_view lhs, stl::string_view rhs ) noexcept;
 
+    template<typename CharT, typename Traits = std::char_traits<char>>
     class arg_suggestor
     {
       //----------------------------------------------------------------------
