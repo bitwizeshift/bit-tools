@@ -2,8 +2,10 @@
 #define BIT_TOOLS_ARG_VECTOR_HPP
 
 #include <bit/stl/string_view.hpp>
+#include <bit/stl/pointer_wrapper.hpp>
 
 #include <iterator>
+#include <memory>
 
 namespace bit {
   namespace tools {
@@ -25,8 +27,8 @@ namespace bit {
       using argc_type         = int;
       using argv_type         = const CharT* const *;
       using value_type        = stl::basic_string_view<CharT,Traits>;
-      using reference         = value_type&;
-      using pointer           = value_type*;
+      using reference         = value_type;
+      using pointer           = stl::pointer_wrapper<value_type>;
       using size_type         = std::size_t;
       using difference_type   = std::ptrdiff_t;
       using iterator_category = std::random_access_iterator_tag;
@@ -69,13 +71,14 @@ namespace bit {
       arg_vector_iterator& operator+=( difference_type n ) noexcept;
       arg_vector_iterator& operator-=( difference_type n ) noexcept;
 
+      reference operator[]( std::ptrdiff_t n ) noexcept;
+
       //----------------------------------------------------------------------
       // Private Member Types
       //----------------------------------------------------------------------
     private:
 
-      argv_type        m_current;
-      stl::string_view m_view;
+      argv_type m_current;
 
       template<typename C, typename T>
       friend bool operator==( const arg_vector_iterator<C,T>&, const arg_vector_iterator<C,T>& ) noexcept;
@@ -146,10 +149,10 @@ namespace bit {
       using size_type  = std::size_t;
       using index_type = std::ptrdiff_t;
 
-      using const_iterator = arg_vector_iterator<CharT,Traits>;
+      using const_iterator         = arg_vector_iterator<CharT,Traits>;
       using const_reverse_iterator = std::reverse_iterator<const_iterator>;
-      using iterator = const_iterator;
-      using reverse_iterator = const_reverse_iterator;
+      using iterator               = const_iterator;
+      using reverse_iterator       = const_reverse_iterator;
 
       //----------------------------------------------------------------------
       // Constructors
@@ -222,21 +225,6 @@ namespace bit {
       /// \return a string_view of the entry at index \p n
       value_type operator[]( index_type n ) const noexcept;
 
-      /// \brief Retrieves the program name (argument 0) from the arg vector
-      ///
-      /// \note In most circumstances arg 0 is the program name, however it
-      ///       may also be the argument provided to an execvp call.
-      ///
-      /// \return the string_view of the program name
-      value_type program() const noexcept;
-
-      /// \brief Retrieves the argument and index \p n from the arg vector
-      ///
-      /// This ignores arg 0 which otherwise will be the program name
-      ///
-      /// \return a string_view of the argument at index \p n
-      value_type arg( index_type n ) const noexcept;
-
       //----------------------------------------------------------------------
       // Iterators
       //----------------------------------------------------------------------
@@ -281,8 +269,8 @@ namespace bit {
       //----------------------------------------------------------------------
     private:
 
-      argv_type m_argv; ///< The arg vector
-      argc_type m_argc; ///< The arg count
+      const argv_type m_argv; ///< The arg vector
+      argc_type       m_argc; ///< The arg count
     };
 
     //------------------------------------------------------------------------
