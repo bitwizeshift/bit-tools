@@ -11,7 +11,9 @@ include(MakeVersionHeader)
 # find_package(Bit 0.2.0 COMPONENTS Stl Math EXACT REQUIRED QUIET)
 
 # Temporary hack while FindBit.cmake is being tuned
-include("$ENV{BIT_HOME}/Stl-0.2/lib/StlTargets.cmake")
+include("$ENV{BIT_HOME}/Stl-1.1/lib/StlTargets.cmake")
+
+find_package(Bit 0.2 COMPONENTS stl REQUIRED EXACT QUIET)
 
 #-----------------------------------------------------------------------------
 # Project Setup
@@ -31,20 +33,23 @@ endif()
 # Version Info
 #-----------------------------------------------------------------------------
 
-git_build_information( MINOR_VARIABLE BIT_TOOLS_VERSION_MINOR
-                       PATCH_VARIABLE BIT_TOOLS_VERSION_PATCH
+git_build_information( PATCH_VARIABLE BIT_TOOLS_VERSION_PATCH
                        BUILD_VARIABLE BIT_TOOLS_BUILD_NUMBER
                        BRANCH_VARIABLE BIT_TOOLS_BRANCH
-                       HASH 3990dd405eb57b9b06a0d54a7efd567b86c1ed01
+                       REF 3990dd405eb57b9b06a0d54a7efd567b86c1ed01
+                       PATHSPECS ${CMAKE_CURRENT_LIST_DIR}/include
+                                 ${CMAKE_CURRENT_LIST_DIR}/src
+                                 ${CMAKE_CURRENT_LIST_DIR}/cmake
+                                 ${CMAKE_CURRENT_LIST_FILE}
 )
 
-set(BIT_TOOLS_VERSION_MAJOR 0 CACHE STRING "major version of bit::stl" FORCE)
-set(BIT_TOOLS_VERSION_MINOR ${BIT_TOOLS_VERSION_MINOR} CACHE STRING "minor version of bit::stl" FORCE)
-set(BIT_TOOLS_VERSION_PATCH ${BIT_TOOLS_VERSION_PATCH} CACHE STRING "patch version of bit::stl" FORCE)
-set(BIT_TOOLS_VERSION "${BIT_TOOLS_VERSION_MAJOR}.${BIT_TOOLS_VERSION_MINOR}.${BIT_TOOLS_VERSION_PATCH}" CACHE STRING "version of bit::stl" FORCE)
-set(BIT_TOOLS_BUILD_NUMBER "${BIT_TOOLS_BUILD_NUMBER}" CACHE STRING "build number of bit::stl" FORCE)
+set(BIT_TOOLS_VERSION_MAJOR 0 CACHE STRING "major version of bit::tools" FORCE)
+set(BIT_TOOLS_VERSION_MINOR 3 CACHE STRING "minor version of bit::tools" FORCE)
+set(BIT_TOOLS_VERSION_PATCH ${BIT_TOOLS_VERSION_PATCH} CACHE STRING "patch version of bit::tools" FORCE)
+set(BIT_TOOLS_VERSION "${BIT_TOOLS_VERSION_MAJOR}.${BIT_TOOLS_VERSION_MINOR}.${BIT_TOOLS_VERSION_PATCH}" CACHE STRING "version of bit::tools" FORCE)
+set(BIT_TOOLS_BUILD_NUMBER "${BIT_TOOLS_BUILD_NUMBER}" CACHE STRING "build number of bit::tools" FORCE)
 
-message(STATUS "bit::stl ${BIT_TOOLS_VERSION} (${BIT_TOOLS_BRANCH} ${BIT_TOOLS_BUILD_NUMBER})")
+message(STATUS "bit::tools ${BIT_TOOLS_VERSION} (${BIT_TOOLS_BRANCH} ${BIT_TOOLS_BUILD_NUMBER})")
 
 #-----------------------------------------------------------------------------
 # bit::tools
@@ -62,20 +67,21 @@ make_version_header("${CMAKE_CURRENT_BINARY_DIR}/include/bit/tools/version.hpp"
   TAG ${BIT_TOOLS_BRANCH}
 )
 
-include_directories("${CMAKE_CURRENT_BINARY_DIR}/include")
-
 set(headers
   include/bit/tools/arg_vector.hpp
   include/bit/tools/arg_suggestor.hpp
+  include/bit/tools/processor.hpp
 )
 
 set(sources
   src/bit/tools/arg_suggestor.cpp
+  src/bit/tools/cpuid.cpp
+  src/bit/tools/processor.cpp
 )
 
 add_library(tools ${sources})
 add_library(bit::tools ALIAS tools)
-target_link_libraries(tools PRIVATE bit::stl)
+target_link_libraries(tools PUBLIC bit::stl)
 
 target_include_directories(tools PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include> $<INSTALL_INTERFACE:include>)
 target_compile_options(tools PUBLIC -std=c++14
@@ -120,12 +126,12 @@ if( EXISTS "$ENV{BIT_HOME}" )
   set(CMAKE_INSTALL_PREFIX "$ENV{BIT_HOME}")
 endif()
 
-# export_library( TARGETS tools
-#                 PACKAGE Tools
-#                 VERSION ${BIT_TOOLS_VERSION}
-#                 MAJOR_VERSION ${BIT_TOOLS_VERSION_MAJOR}
-#                 MINOR_VERSION ${BIT_TOOLS_VERSION_MINOR}
-#                 INCLUDE_PATHS "${CMAKE_CURRENT_LIST_DIR}/include"
-#                               "${CMAKE_CURRENT_BINARY_DIR}/include"
-#                 NAMESPACE "bit::"
-#                 PREFIX_PACKAGE )
+export_library( TARGETS tools
+                PACKAGE Tools
+                VERSION ${BIT_TOOLS_VERSION}
+                MAJOR_VERSION ${BIT_TOOLS_VERSION_MAJOR}
+                MINOR_VERSION ${BIT_TOOLS_VERSION_MINOR}
+                INCLUDE_PATHS "${CMAKE_CURRENT_LIST_DIR}/include"
+                              "${CMAKE_CURRENT_BINARY_DIR}/include"
+                NAMESPACE "bit::"
+                PREFIX_PACKAGE )
