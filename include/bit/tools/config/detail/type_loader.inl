@@ -11,7 +11,6 @@ inline T bit::tools::casts::node_cast( const Node& node )
   return node_traits<Node>::template cast<T>( node );
 }
 
-
 //------------------------------------------------------------------------
 // Constructor
 //------------------------------------------------------------------------

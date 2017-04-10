@@ -63,13 +63,13 @@ make_version_header("${CMAKE_CURRENT_BINARY_DIR}/include/bit/tools/version.hpp"
 )
 
 set(headers
-  include/bit/tools/arg_vector.hpp
-  include/bit/tools/arg_suggestor.hpp
-  include/bit/tools/type_loader.hpp
+  include/bit/tools/args/arg_vector.hpp
+  include/bit/tools/args/arg_suggestor.hpp
+  include/bit/tools/config/type_loader.hpp
 )
 
 set(sources
-  src/bit/tools/arg_suggestor.cpp
+  src/bit/tools/args/arg_suggestor.cpp
 )
 
 add_library(tools ${sources})
