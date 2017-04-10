@@ -6,7 +6,7 @@
 //------------------------------------------------------------------------
 
 template<typename T, typename Node>
-inline T bit::tools::node_cast( const Node& node )
+inline T bit::tools::casts::node_cast( const Node& node )
 {
   return node_traits<Node>::template cast<T>( node );
 }
