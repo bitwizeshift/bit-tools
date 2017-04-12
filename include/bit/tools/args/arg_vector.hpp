@@ -159,6 +159,9 @@ namespace bit {
       //----------------------------------------------------------------------
     public:
 
+      /// \brief Constructs an arg_vector that points to no arguments
+      basic_arg_vector() noexcept;
+
       /// \brief Constructs an arg_vector given the \p argc and \p argv
       ///        from main
       ///
@@ -269,8 +272,8 @@ namespace bit {
       //----------------------------------------------------------------------
     private:
 
-      const argv_type m_argv; ///< The arg vector
-      argc_type       m_argc; ///< The arg count
+      argv_type m_argv; ///< The arg vector
+      argc_type m_argc; ///< The arg count
     };
 
     //------------------------------------------------------------------------

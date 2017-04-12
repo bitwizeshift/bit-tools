@@ -220,6 +220,13 @@ inline bool
 //----------------------------------------------------------------------------
 
 template<typename CharT, typename Traits>
+inline bit::tools::basic_arg_vector<CharT,Traits>::basic_arg_vector()
+  noexcept
+  : basic_arg_vector( 0, nullptr )
+{
+
+}
+template<typename CharT, typename Traits>
 inline bit::tools::basic_arg_vector<CharT,Traits>::basic_arg_vector( argc_type argc, argv_type argv )
   noexcept
   : m_argv(argv),
