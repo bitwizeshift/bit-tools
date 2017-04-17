@@ -1,10 +1,14 @@
 #ifndef BIT_TOOLS_ARG_PARSER_HPP
 #define BIT_TOOLS_ARG_PARSER_HPP
 
+#include "arg_vector.hpp"
+
 #include <bit/stl/utility.hpp>
 #include <bit/stl/hashed_string_view.hpp>
+#include <bit/stl/casts.hpp>
+#include <bit/stl/iterator.hpp>
 
-#include "arg_vector.hpp"
+#include <vector>
 
 namespace bit {
   namespace tools {
@@ -19,13 +23,6 @@ namespace bit {
           multi,  ///< Multi argument
           option, ///< Optional argument
           alias,  ///< Alias argument
-        };
-
-        enum class node_state
-        {
-          set,    ///< The argument is set, given a value
-          unset,  ///< The argument was not set, no value
-          unknown ///< The argument has not been set yet
         };
 
         using string_type = stl::basic_string_view<CharT,Traits>;
@@ -46,7 +43,7 @@ namespace bit {
         basic_arg_node* next;    ///< The next node in the chain
         string_type     flag;    ///< The flag
         node_type       type;    ///< The type of the node
-        node_state      state;   ///< The state of the node
+        bool            set;     ///< Whether this node has been set
       };
 
     } // namespace detail
@@ -62,7 +59,9 @@ namespace bit {
     template<typename CharT, typename Traits = std::char_traits<CharT>>
     class basic_arg_set
     {
-      static_assert( std::is_same<CharT,typename Traits::char_type>::value, "char_type must be the same as CharT");
+      static_assert( std::is_same<CharT,typename Traits::char_type>::value, "Traits::char_type must be the same as CharT");
+
+      using unmatched_type = std::vector<stl::basic_string_view<CharT,Traits>>;
 
       //----------------------------------------------------------------------
       // Public Member Types
@@ -71,6 +70,9 @@ namespace bit {
 
       using string_type = stl::basic_string_view<CharT,Traits>;
       using size_type   = std::size_t;
+
+      using unmatched_range = stl::range<typename unmatched_type::iterator,
+                                         typename unmatched_type::iterator>;
 
       //----------------------------------------------------------------------
       // Constructor
@@ -98,6 +100,11 @@ namespace bit {
       /// \return the number of arguments
       size_type size() const noexcept;
 
+      /// \brief Returns the range of unmatched arguments
+      ///
+      /// \return the range of unmatched arguments
+      unmatched_range unmatched() const noexcept;
+
       //----------------------------------------------------------------------
       // Private Member Types
       //----------------------------------------------------------------------
@@ -110,7 +117,15 @@ namespace bit {
       //----------------------------------------------------------------------
     private:
 
-      node_type* m_head; ///< The type of the node
+      // todo: Possible optimization: Forego any heap allocation by creating
+      //       a custom filter iterator that iterates unmatched arguments
+
+      node_type*     m_head;      ///< The type of the node
+      unmatched_type m_unmatched; ///< A vector containing unmatched arguments
+
+      template<typename C, typename T>
+      friend bool parse_arguments( basic_arg_set<C,T>* arg_set,
+                                   basic_arg_vector<C,T> args );
     };
 
     //////////////////////////////////////////////////////////////////////////
@@ -120,7 +135,7 @@ namespace bit {
     template<typename CharT, typename Traits = std::char_traits<CharT>>
     class basic_single_arg
     {
-      static_assert( std::is_same<CharT,typename Traits::char_type>::value, "char_type must be the same as CharT");
+      static_assert( std::is_same<CharT,typename Traits::char_type>::value, "Traits::char_type must be the same as CharT");
 
       //----------------------------------------------------------------------
       // Public Member Types
@@ -159,13 +174,18 @@ namespace bit {
       /// \return the value
       value_type value() const noexcept;
 
-      /// \brief Queries whether this arg_option has been set
+      /// \brief Queries whether this basic_single_arg has been set
       ///
       /// This can be used to determine whether a flag default-asigned or
       /// specified on command-line
       ///
       /// \return \c true if the value was set
       bool is_set() const noexcept;
+
+      /// \brief Queries whether this basic_single_arg has been set
+      ///
+      /// \return \c true if the value was set
+      explicit operator bool() const noexcept;
 
       //----------------------------------------------------------------------
       // Private Member Types
@@ -189,7 +209,7 @@ namespace bit {
     template<typename CharT, typename Traits = std::char_traits<CharT>>
     class basic_multi_arg
     {
-      static_assert( std::is_same<CharT,typename Traits::char_type>::value, "char_type must be the same as CharT");
+      static_assert( std::is_same<CharT,typename Traits::char_type>::value, "Traits::char_type must be the same as CharT");
 
       //----------------------------------------------------------------------
       // Public Member Types
@@ -228,13 +248,18 @@ namespace bit {
       /// \return the value
       value_type value() const noexcept;
 
-      /// \brief Queries whether this arg_option has been set
+      /// \brief Queries whether this basic_multi_arg has been set
       ///
       /// This can be used to determine whether a flag default-asigned or
       /// specified on command-line
       ///
       /// \return \c true if the value was set
       bool is_set() const noexcept;
+
+      /// \brief Queries whether this basic_multi_arg has been set
+      ///
+      /// \return \c true if the value was set
+      explicit operator bool() const noexcept;
 
       //----------------------------------------------------------------------
       // Private Member Types
@@ -258,7 +283,7 @@ namespace bit {
     template<typename CharT, typename Traits = std::char_traits<CharT>>
     class basic_option_arg
     {
-      static_assert( std::is_same<CharT,typename Traits::char_type>::value, "char_type must be the same as CharT");
+      static_assert( std::is_same<CharT,typename Traits::char_type>::value, "Traits::char_type must be the same as CharT");
 
       //----------------------------------------------------------------------
       // Public Member Types
@@ -297,13 +322,18 @@ namespace bit {
       /// \return the value
       value_type value() const noexcept;
 
-      /// \brief Queries whether this arg_option has been set
+      /// \brief Queries whether this basic_option_arg has been set
       ///
       /// This can be used to determine whether a flag default-asigned or
       /// specified on command-line
       ///
       /// \return \c true if the value was set
       bool is_set() const noexcept;
+
+      /// \brief Queries whether this basic_option_arg has been set
+      ///
+      /// \return \c true if the value was set
+      explicit operator bool() const noexcept;
 
       //----------------------------------------------------------------------
       // Private Member Types
@@ -321,13 +351,13 @@ namespace bit {
     };
 
     //////////////////////////////////////////////////////////////////////////
-    ///
+    /// \brief Alias argument
     ///
     //////////////////////////////////////////////////////////////////////////
     template<typename CharT, typename Traits = std::char_traits<CharT>>
     class basic_alias_arg
     {
-      static_assert( std::is_same<CharT,typename Traits::char_type>::value, "char_type must be the same as CharT");
+      static_assert( std::is_same<CharT,typename Traits::char_type>::value, "Traits::char_type must be the same as CharT");
 
       //----------------------------------------------------------------------
       // Public Member Types
@@ -358,7 +388,6 @@ namespace bit {
       /// \copydoc basic_alias_arg( basic_single_arg<CharT,Traits>&, key_type flag )
       basic_alias_arg( basic_alias_arg& value, key_type flag ) noexcept;
 
-
       //----------------------------------------------------------------------
       // Private Member Types
       //----------------------------------------------------------------------
@@ -385,16 +414,19 @@ namespace bit {
       basic_alias_arg( key_type flag, node_type* node ) noexcept;
     };
 
-    //////////////////////////////////////////////////////////////////////////
-    /// \brief A parser
-    ///
-    //////////////////////////////////////////////////////////////////////////
-    template<typename CharT, typename Traits = std::char_traits<CharT>>
-    class basic_arg_parser final
-    {
-      static_assert( std::is_same<CharT,typename Traits::char_type>::value, "char_type must be the same as CharT");
+    //------------------------------------------------------------------------
+    // Argument Parsing
+    //------------------------------------------------------------------------
 
-    };
+    /// \brief Parses all \p args and stores the results in the variable
+    ///        pointed to by \p arg_set
+    ///
+    /// \param arg_set
+    /// \param args
+    /// \return \c true if parsing was successful
+    template<typename CharT, typename Traits>
+    bool parse_arguments( basic_arg_set<CharT,Traits>* arg_set,
+                          basic_arg_vector<CharT,Traits> args );
 
     //------------------------------------------------------------------------
     // Type Aliases
@@ -433,14 +465,9 @@ namespace bit {
     using u16alias_arg = basic_alias_arg<char16_t>;
     using u32alias_arg = basic_alias_arg<char32_t>;
 
-    //------------------------------------------------------------------------
-
-    using arg_parser    = basic_arg_parser<char>;
-    using warg_parser   = basic_arg_parser<wchar_t>;
-    using u16arg_parser = basic_arg_parser<char16_t>;
-    using u32arg_parser = basic_arg_parser<char32_t>;
-
   } // namespace tools
 } // namespace bit
+
+#include "detail/arg_parser.inl"
 
 #endif // BIT_TOOLS_ARG_PARSER_HPP
