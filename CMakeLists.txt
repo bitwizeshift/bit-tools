@@ -31,7 +31,7 @@ endif()
 git_build_information( PATCH_VARIABLE BIT_TOOLS_VERSION_PATCH
                        BUILD_VARIABLE BIT_TOOLS_BUILD_NUMBER
                        BRANCH_VARIABLE BIT_TOOLS_BRANCH
-                       REF v0.4
+                       REF v0.5
                        PATHSPECS ${CMAKE_CURRENT_LIST_DIR}/include
                                  ${CMAKE_CURRENT_LIST_DIR}/src
                                  ${CMAKE_CURRENT_LIST_DIR}/cmake
@@ -39,7 +39,7 @@ git_build_information( PATCH_VARIABLE BIT_TOOLS_VERSION_PATCH
 )
 
 set(BIT_TOOLS_VERSION_MAJOR 0 CACHE STRING "major version of bit::tools" FORCE)
-set(BIT_TOOLS_VERSION_MINOR 4 CACHE STRING "minor version of bit::tools" FORCE)
+set(BIT_TOOLS_VERSION_MINOR 5 CACHE STRING "minor version of bit::tools" FORCE)
 set(BIT_TOOLS_VERSION_PATCH ${BIT_TOOLS_VERSION_PATCH} CACHE STRING "patch version of bit::tools" FORCE)
 set(BIT_TOOLS_VERSION "${BIT_TOOLS_VERSION_MAJOR}.${BIT_TOOLS_VERSION_MINOR}.${BIT_TOOLS_VERSION_PATCH}" CACHE STRING "version of bit::tools" FORCE)
 set(BIT_TOOLS_BUILD_NUMBER "${BIT_TOOLS_BUILD_NUMBER}" CACHE STRING "build number of bit::tools" FORCE)
