@@ -257,6 +257,24 @@ inline typename bit::tools::basic_arg_vector<CharT,Traits>::size_type
 }
 
 //----------------------------------------------------------------------------
+// Operations
+//----------------------------------------------------------------------------
+
+template<typename CharT, typename Traits>
+inline bit::tools::basic_arg_vector<CharT,Traits>
+  bit::tools::basic_arg_vector<CharT,Traits>::subvec( size_type pos,
+                                                      size_type count )
+  const noexcept
+{
+  const auto max_length = (pos > m_argc) ? 0       : m_argc - pos;
+  const auto argv       = (pos > m_argc) ? nullptr : m_argv + pos;
+  const auto length     = (count > max_length ? max_length : count);
+
+  return basic_arg_vector( length, argv );
+
+}
+
+//----------------------------------------------------------------------------
 // Element Access
 //----------------------------------------------------------------------------
 
