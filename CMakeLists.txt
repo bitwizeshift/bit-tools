@@ -65,6 +65,7 @@ make_version_header("${CMAKE_CURRENT_BINARY_DIR}/include/bit/tools/version.hpp"
 set(headers
   include/bit/tools/args/arg_vector.hpp
   include/bit/tools/args/arg_suggestor.hpp
+  include/bit/tools/args/arg_parser.hpp
   include/bit/tools/config/type_loader.hpp
 )
 

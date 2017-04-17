@@ -155,6 +155,13 @@ namespace bit {
       using reverse_iterator       = const_reverse_iterator;
 
       //----------------------------------------------------------------------
+      // Public Static Members
+      //----------------------------------------------------------------------
+    public:
+
+      static constexpr index_type npos = -1;
+
+      //----------------------------------------------------------------------
       // Constructors
       //----------------------------------------------------------------------
     public:
@@ -205,6 +212,20 @@ namespace bit {
       ///
       /// \return the number of entries in this arg_vector
       size_type size() const noexcept;
+
+      //----------------------------------------------------------------------
+      // Operations
+      //----------------------------------------------------------------------
+    public:
+
+      /// \brief Returns the sub-vector \c [pos,pos+count). If the requested
+      ///        sub-vector extends past the end of the vector, or if
+      ///        \c count==npos, the returned sub-vector is \c [pos,size())
+      ///
+      /// \param pos the position of the start of the sub-vector
+      /// \param count the position of the end of the sub-vector
+      /// \return the subvector
+      basic_arg_vector subvec( size_type pos, size_type count = npos ) const noexcept;
 
       //----------------------------------------------------------------------
       // Element Access
